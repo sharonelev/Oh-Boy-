@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:layout_marginTop="8dp"
+  android:layout_marginStart="8dp"
+  android:layout_marginEnd="8dp">
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    >
+    <TextView
+      android:id="@+id/text_view_title"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Title"
+      android:maxLines="1"
+      android:paddingLeft="8dp"
+      android:paddingTop="8dp"
+      style="@style/TextAppearance.AppCompat.Large"/>
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:padding="8dp">
+
+      <TextView
+        android:id="@+id/text_view_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:paddingBottom="3dp"
+        android:text="1"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textSize="15sp"/>
+
+
+      <TextView
+        android:id="@+id/text_view_dob"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_gravity="end"
+        android:text="3 years and 2 months old"
+        android:textAlignment="textEnd"/>
+
+
+    </LinearLayout>
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+      <com.daasuu.bl.BubbleLayout
+        android:id="@+id/bubble_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_gravity="center_vertical"
+        android:padding="8dp"
+        app:bl_arrowDirection="right"
+        app:bl_arrowHeight="16dp"
+        app:bl_arrowPosition="10dp"
+        app:bl_arrowWidth="16dp"
+        app:bl_bubbleColor="@color/colorAccent"
+        app:bl_cornersRadius="16dp">
+        <TextView
+          android:id="@+id/text_view_description"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:ellipsize="end"
+          android:maxLines="3"
+          android:text="description"/>
+
+      </com.daasuu.bl.BubbleLayout>
+
+      <ImageView
+        android:id="@+id/child_image"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:layout_weight="1"
+        android:src="@drawable/ic_person"
+        android:textAlignment="textEnd"
+
+        />
+    </LinearLayout>
+  </LinearLayout>
+</androidx.cardview.widget.CardView>

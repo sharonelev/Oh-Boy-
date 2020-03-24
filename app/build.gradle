@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 28
@@ -35,4 +37,10 @@ dependencies {
     annotationProcessor "androidx.room:room-compiler:$room_version"
     // For Kotlin use kapt instead of annotationProcessor
     annotationProcessor "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
+    implementation "androidx.core:core-ktx:+"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.0.0"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+repositories {
+    mavenCentral()
 }

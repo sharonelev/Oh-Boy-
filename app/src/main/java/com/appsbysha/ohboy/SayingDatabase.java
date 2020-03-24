@@ -9,8 +9,10 @@ import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 import com.appsbysha.ohboy.entities.Child;
 import com.appsbysha.ohboy.entities.Saying;
+import com.appsbysha.ohboy.entities.SayingWithSentences;
+import com.appsbysha.ohboy.entities.Sentence;
 
-@Database(entities = {Saying.class, Child.class}, version = 1, exportSchema = false)
+@Database(entities = {Saying.class, Child.class, Sentence.class}, version = 1, exportSchema = false)
 public abstract class SayingDatabase extends RoomDatabase {
 
   private static SayingDatabase instance;
@@ -19,7 +21,7 @@ public abstract class SayingDatabase extends RoomDatabase {
 
   public static synchronized SayingDatabase getInstance(Context context) {
     if (instance == null) {
-      //context.deleteDatabase("saying_database"); //remove if no changes made to db
+    //  context.deleteDatabase("saying_database"); //remove if no changes made to db
       instance = Room.databaseBuilder(context.getApplicationContext(),
           SayingDatabase.class, "saying_database")
           .fallbackToDestructiveMigration()

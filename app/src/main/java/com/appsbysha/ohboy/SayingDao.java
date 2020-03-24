@@ -5,9 +5,12 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Transaction;
 import androidx.room.Update;
 import com.appsbysha.ohboy.entities.Child;
 import com.appsbysha.ohboy.entities.Saying;
+import com.appsbysha.ohboy.entities.SayingWithSentences;
+import com.appsbysha.ohboy.entities.Sentence;
 import java.util.List;
 
 @Dao
@@ -43,4 +46,9 @@ public interface SayingDao {
 
     @Query("SELECT * FROM children_table ORDER BY dob")
     LiveData<List<Child>> getAllChildren();
+
+    @Transaction
+    @Query("SELECT * FROM saying_table")
+    public List<SayingWithSentences> getSayingWithSentences();
+
 }

@@ -41,7 +41,6 @@ public class SayingAdapter extends RecyclerView.Adapter<SayingAdapter.SayingHold
       holder.textViewTitle.setText(currentSaying.getTitle());
       if(currentSaying.getTitle().isEmpty())
       {holder.textViewTitle.setVisibility(View.GONE);}
-      holder.textViewDescription.setText(currentSaying.getDescription());
       String sayingDate = currentSaying.getDate();
       holder.textViewDate.setText(sayingDate);
       SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");

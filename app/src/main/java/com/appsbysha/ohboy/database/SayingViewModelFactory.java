@@ -1,9 +1,8 @@
-package com.appsbysha.ohboy;
+package com.appsbysha.ohboy.database;
 
 import android.app.Application;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
-import com.appsbysha.ohboy.SayingViewModel;
 
 public class SayingViewModelFactory implements ViewModelProvider.Factory {
   private Application mApplication;

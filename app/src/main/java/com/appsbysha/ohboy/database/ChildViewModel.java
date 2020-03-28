@@ -1,4 +1,4 @@
-package com.appsbysha.ohboy;
+package com.appsbysha.ohboy.database;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -8,12 +8,12 @@ import com.appsbysha.ohboy.entities.Child;
 import java.util.List;
 
 public class ChildViewModel extends AndroidViewModel {
-  private SayingRepository repository;
+  private OhBoyRepository repository;
   private LiveData<List<Child>> allChildren;
   
   public ChildViewModel(@NonNull Application application) {
     super(application);
-    repository = new SayingRepository(application);
+    repository = new OhBoyRepository(application);
     allChildren =repository.getAllChildren();
     
   }

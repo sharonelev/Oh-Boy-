@@ -13,8 +13,11 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.appsbysha.ohboy.SayingAdapter.OnItemClickListener;
-import com.appsbysha.ohboy.SayingAdapter.OnLongClickListener;
+import com.appsbysha.ohboy.adapters.SayingAdapter;
+import com.appsbysha.ohboy.adapters.SayingAdapter.OnItemClickListener;
+import com.appsbysha.ohboy.adapters.SayingAdapter.OnLongClickListener;
+import com.appsbysha.ohboy.database.SayingViewModel;
+import com.appsbysha.ohboy.database.SayingViewModelFactory;
 import com.appsbysha.ohboy.entities.Saying;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.List;
@@ -32,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
   private String childDob;
   private String childName;
   Intent intent;
+
 
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
@@ -51,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
     recyclerView.setHasFixedSize(true);
 
-    final SayingAdapter adapter = new SayingAdapter();
+    final SayingAdapter adapter = new SayingAdapter(this);
     recyclerView.setAdapter(adapter);
 
     adapter.setOnItemClickListener(new OnItemClickListener() {

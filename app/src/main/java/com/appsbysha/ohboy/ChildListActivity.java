@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract.CommonDataKinds.Im;
 import android.provider.MediaStore;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,12 +21,13 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.appsbysha.ohboy.ChildAdapter.OnItemClickListener;
+import com.appsbysha.ohboy.adapters.ChildAdapter;
+import com.appsbysha.ohboy.adapters.ChildAdapter.OnItemClickListener;
+import com.appsbysha.ohboy.database.ChildViewModel;
 import com.appsbysha.ohboy.entities.Child;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.List;
 
 public class ChildListActivity extends AppCompatActivity {

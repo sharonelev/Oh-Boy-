@@ -45,12 +45,54 @@
         android:layout_weight="1" />
     </LinearLayout>
 
+
+
 <androidx.recyclerview.widget.RecyclerView
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:id="@+id/linesRecyclerView"
+  app:layout_constraintStart_toStartOf="parent"
+  app:layout_constraintEnd_toEndOf="parent"
   app:layout_constraintTop_toBottomOf="@id/topLayout"/>
 
-
+    <LinearLayout
+      android:id="@+id/insertLine"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/linesRecyclerView">
+      <TextView
+        android:text="@string/add_line"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_marginEnd="10dp"
+        android:layout_height="wrap_content"/>
+      <ImageView
+        android:id="@+id/saying_child_button"
+        android:layout_marginEnd="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_person"
+        android:layout_gravity="start"
+        />
+      <TextView
+        android:id="@+id/brackets_button"
+        android:layout_marginEnd="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="[...]"
+        android:textSize="20sp"
+        android:layout_gravity="start"
+        />
+      <ImageView
+        android:id="@+id/other_person_button"
+        android:layout_marginEnd="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_person"
+        android:layout_gravity="start"
+        />
+    </LinearLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

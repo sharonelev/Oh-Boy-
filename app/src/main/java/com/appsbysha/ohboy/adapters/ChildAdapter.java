@@ -1,4 +1,4 @@
-package com.appsbysha.ohboy;
+package com.appsbysha.ohboy.adapters;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.appsbysha.ohboy.R;
 import com.appsbysha.ohboy.entities.Child;
 import java.util.ArrayList;
 import java.util.List;

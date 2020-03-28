@@ -48,44 +48,11 @@
 
 
     </LinearLayout>
-    <LinearLayout
+
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/linesRecyclerView"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content">
-      <com.daasuu.bl.BubbleLayout
-        android:id="@+id/bubble_description"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="2"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:layout_marginLeft="5dp"
-        android:layout_gravity="center_vertical"
-        android:padding="8dp"
-        app:bl_arrowDirection="right"
-        app:bl_arrowHeight="16dp"
-        app:bl_arrowPosition="10dp"
-        app:bl_arrowWidth="16dp"
-        app:bl_bubbleColor="@color/colorAccent"
-        app:bl_cornersRadius="16dp">
-        <TextView
-          android:id="@+id/text_view_description"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:ellipsize="end"
-          android:maxLines="3"
-          android:text="description"/>
-
-      </com.daasuu.bl.BubbleLayout>
-
-      <ImageView
-        android:id="@+id/child_image"
-        android:layout_width="0dp"
-        android:layout_height="100dp"
-        android:layout_weight="1"
-        android:src="@drawable/ic_person"
-        android:textAlignment="textEnd"
-
-        />
-    </LinearLayout>
+      android:layout_height="wrap_content"
+/>
   </LinearLayout>
 </androidx.cardview.widget.CardView>

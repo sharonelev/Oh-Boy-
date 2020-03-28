@@ -1,3 +1,7 @@
 <resources>
   <string name="app_name">oh, Boy!</string>
+  <string name="add_line">Add line:</string>
+  <string name="description">description</string>
+  <string name="name">name</string>
+  <string name="insert_text">insert text</string>
 </resources>

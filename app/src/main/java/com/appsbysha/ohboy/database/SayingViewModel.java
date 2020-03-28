@@ -1,26 +1,30 @@
-package com.appsbysha.ohboy;
+package com.appsbysha.ohboy.database;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import com.appsbysha.ohboy.entities.Line;
 import com.appsbysha.ohboy.entities.Saying;
 import java.util.List;
 
 public class SayingViewModel extends AndroidViewModel {
-  private SayingRepository repository;
+  private OhBoyRepository repository;
   private LiveData<List<Saying>> allSayings;
+
   private int childId;
 
   public SayingViewModel(@NonNull Application application, int childId) {
     super(application);
     this.childId = childId;
-    repository = new SayingRepository(application, this.childId);
+    repository = new OhBoyRepository(application, this.childId);
     allSayings = repository.getAllSayings();
+
   }
   public void insert(Saying saying) {
     repository.insert(saying);
   }
+
 
   public void update(Saying saying) {
     repository.update(saying);
@@ -37,5 +41,6 @@ public class SayingViewModel extends AndroidViewModel {
   public LiveData<List<Saying>> getAllSayings() {
     return allSayings;
   }
-  
+
+
 }

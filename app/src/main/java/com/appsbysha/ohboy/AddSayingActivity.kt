@@ -11,29 +11,44 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.appsbysha.ohboy.adapters.LineAdapter
+import com.appsbysha.ohboy.database.LineViewModel
+import com.appsbysha.ohboy.database.LineViewModelFactory
+import com.appsbysha.ohboy.database.SayingViewModel
+import com.appsbysha.ohboy.database.SayingViewModelFactory
+import com.appsbysha.ohboy.entities.Line
+import com.appsbysha.ohboy.entities.LineType
 import com.appsbysha.ohboy.entities.Saying
-import com.appsbysha.ohboy.entities.SayingWithSentences
-import com.appsbysha.ohboy.entities.Sentence
-import kotlinx.android.synthetic.main.enter_date_layout.*
+import com.appsbysha.ohboy.entities.SayingWithLines
+import kotlinx.android.synthetic.main.activity_add_saying.*
 import java.io.ByteArrayOutputStream
 import java.io.FileNotFoundException
 import java.io.IOException
-import java.text.SimpleDateFormat
 import java.util.*
 
 class AddSayingActivity : AppCompatActivity() {
     private lateinit var sayingViewModel: SayingViewModel
-    var childId = 0
+    private lateinit var lineViewModel: LineViewModel
+    private var childId = 0
     private lateinit var editTextTitle: TextView
     private lateinit var editTextDescription: TextView
-    var sayingDate: String? = null
+    private var sayingDate: String? = null
     private lateinit var addPhotoFromGallery: ImageView
-    var sayingImage: ImageView? = null
-    lateinit var sayingByteImage: ByteArray
+    private var sayingImage: ImageView? = null
+    private var sayingByteImage: ByteArray? = null
+    lateinit var saying: Saying
+    private var listOfLines: MutableList<Line> = mutableListOf()
+    private lateinit var linesRecyclerView: RecyclerView
+    private lateinit var linesAdapter: LineAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_saying)
+
         editTextTitle = findViewById(R.id.edit_text_title)
         addPhotoFromGallery = findViewById(R.id.upload_photo)
         addPhotoFromGallery.setOnClickListener(View.OnClickListener {
@@ -48,36 +63,77 @@ class AddSayingActivity : AppCompatActivity() {
         title = "Add Saying"
         val intent = intent
         childId = intent.getIntExtra(MainActivity.extra_childId, 0)
+        saying = Saying(sayingId = UUID.randomUUID().toString(), childId = childId)
+
+        linesRecyclerView = findViewById(R.id.linesRecyclerView)
+        linesRecyclerView.layoutManager = LinearLayoutManager(this)
+        linesRecyclerView.setHasFixedSize(true)
+        linesAdapter = LineAdapter()
+        linesAdapter.setLines(listOfLines, true)
+        linesRecyclerView.adapter = linesAdapter
+
         sayingViewModel = ViewModelProviders
                 .of(this, SayingViewModelFactory(this.application, childId))
                 .get(SayingViewModel::class.java)
+
+        setButtons()
+        lineViewModel = ViewModelProviders.of(this, LineViewModelFactory(this.application, childId, saying))
+                .get(LineViewModel::class.java)
+
+        lineViewModel.allLines.observe(this, androidx.lifecycle.Observer { lines -> linesAdapter.setLines(lines, true) }) //was listOfLines
+
+
+    }
+
+    private fun setButtons() {
+        saying_child_button.setOnClickListener {
+            val newLine = Line(UUID.randomUUID().toString(), saying.sayingId, 0, "", LineType.CHILD_LINE.value, null)
+            //     lineViewModel.insert(newLine)
+            listOfLines.add(newLine)
+            linesAdapter.setLines(listOfLines, true)
+        }
+        brackets_button.setOnClickListener {
+            val newLine = Line(UUID.randomUUID().toString(), saying.sayingId, 0, "", LineType.BRACKETS.value, null)
+            //    lineViewModel.insert(newLine)
+            listOfLines.add(newLine)
+            linesAdapter.setLines(listOfLines, true)
+        }
+        other_person_button.setOnClickListener {
+            val newLine = Line(UUID.randomUUID().toString(), saying.sayingId, 0, "", LineType.OTHER_PERSON_LINE.value, "")
+            //    lineViewModel.insert(newLine)
+            listOfLines.add(newLine)
+            linesAdapter.setLines(listOfLines, true)
+
+        }
+
+
     }
 
     private fun saveSaying() {
-        val title = editTextTitle!!.text.toString()
-        val saying = Saying(childId, title, sayingDate, sayingByteImage)
 
+        val title = editTextTitle.text.toString()
 
-        val sentence = Sentence(0, description = editTextDescription!!.text.toString(), sentenceSayingId = saying.sayingId, isBracket = false)
-        val sentences = ArrayList<Sentence>()  //1 sentence in list for now
-        sentences.add(sentence)
+        saying.title = title
+        saying.date = sayingDate
+        saying.photo = sayingByteImage
 
-        val sws: SayingWithSentences = SayingWithSentences(saying, sentences)
-        var value = text_view_dd.text.toString()
+        //  val sws: SayingWithLines = SayingWithLines(saying, listOfLines)
+        /*var value = text_view_dd.text.toString()
         val day: Int = value.toInt()
         value = text_view_MM.text.toString()
         val month: Int = value.toInt()
         value = text_view_yyyy.text.toString()
-        val year: Int= value.toInt()
+        val year: Int = value.toInt()
         val calendar = Calendar.getInstance()
         calendar[year, month] = day
         val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-        sayingDate = format.format(calendar.time)
-        /*  if (description.trim().isEmpty()) {
-      Toast.makeText(this, "Please insert saying in description", Toast.LENGTH_SHORT).show();
-      return;
-    }*/
+        sayingDate = format.format(calendar.time)*/
+
+        for (line in listOfLines) {
+            lineViewModel.insert(line)
+        }
         sayingViewModel.insert(saying)
+
         finish()
     }
 
@@ -116,8 +172,8 @@ class AddSayingActivity : AppCompatActivity() {
                 CAMERA_PIC_REQUEST -> bitmap = data!!.extras["data"] as Bitmap
             }
             if (bitmap != null) {
-                sayingImage!!.setImageBitmap(bitmap)
-                sayingImage!!.visibility = View.VISIBLE
+                sayingImage?.setImageBitmap(bitmap)
+                sayingImage?.visibility = View.VISIBLE
                 val stream = ByteArrayOutputStream()
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
                 sayingByteImage = stream.toByteArray()
@@ -129,4 +185,6 @@ class AddSayingActivity : AppCompatActivity() {
         const val GET_FROM_GALLERY = 3
         const val CAMERA_PIC_REQUEST = 200
     }
+
+
 }

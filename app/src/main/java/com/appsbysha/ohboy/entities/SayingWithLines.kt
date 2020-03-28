@@ -4,11 +4,11 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.Relation
 
-data class SayingWithSentences (
+data class SayingWithLines (
     @Embedded val saying:Saying,
             @Relation(
                     parentColumn = "sayingId",
-                    entityColumn = "sentenceSayingId"
+                    entityColumn = "lineSayingId"
             )
-            val sentence: List<Sentence>
+            val line: List<Line>
 )

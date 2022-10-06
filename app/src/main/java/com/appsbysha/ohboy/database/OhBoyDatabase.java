@@ -11,7 +11,7 @@ import com.appsbysha.ohboy.entities.Child;
 import com.appsbysha.ohboy.entities.Saying;
 import com.appsbysha.ohboy.entities.Line;
 
-@Database(entities = {Saying.class, Child.class, Line.class}, version = 1, exportSchema = false)
+@Database(entities = {Saying.class, Child.class, Line.class}, version = 2, exportSchema = false)
 public abstract class OhBoyDatabase extends RoomDatabase {
 
   private static OhBoyDatabase instance;

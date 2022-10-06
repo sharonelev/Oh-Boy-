@@ -18,6 +18,7 @@ public class OhBoyRepository {
   private LiveData<List<Saying>> allSayings;
   private LiveData<List<Child>> allChildren;
   private LiveData<List<Line>> allLines;
+  private  LiveData<Child> childData;
  // private List<Line> allLinesView;
   private int childId;
   private String sayingId;
@@ -29,11 +30,12 @@ public class OhBoyRepository {
     allChildren = ohBoyDao.getAllChildren();
   }
 
-  public OhBoyRepository(Application application, int childId) { //all sayings per child
+  public OhBoyRepository(Application application, int childId) { //data by child id
     OhBoyDatabase database = OhBoyDatabase.getInstance(application);
     ohBoyDao = database.ohBoyDao();
     this.childId = childId;
     allSayings = ohBoyDao.getAllSayings(this.childId);
+    childData = ohBoyDao.getChildById(this.childId);
   }
   public OhBoyRepository(Application application, int childId, String sayingId) { //all lines per saying per child
     OhBoyDatabase database = OhBoyDatabase.getInstance(application);
@@ -105,6 +107,7 @@ new InsertLineAsyncTask(ohBoyDao).execute((line));
     return allChildren;
   }
 
+  public LiveData<Child> getChildById(int childId){return childData;}
 
   private static class InsertSayingAsyncTask extends AsyncTask<Saying, Void, Void> {
 
@@ -302,6 +305,7 @@ new InsertLineAsyncTask(ohBoyDao).execute((line));
       return null;
     }
   }
+
 
   private static class DeleteAllChildrenAsyncTask extends AsyncTask<Void, Void, Void> {
 

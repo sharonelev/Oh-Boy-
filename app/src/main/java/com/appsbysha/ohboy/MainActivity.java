@@ -9,7 +9,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,10 +30,12 @@ public class MainActivity extends AppCompatActivity {
   public static String extra_childId = "CHILDID";
   public static String extra_childdob = "CHILDDOB";
   public static String extra_childname = "CHILDNAME";
+  public static String extra_childpic = "CHILDPIC";
 
   private int childId;
   private String childDob;
   private String childName;
+  private Byte childPic;
   Intent intent;
 
 
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
       childId = intent.getIntExtra(extra_childId, 0);
       childName = intent.getStringExtra(extra_childname);
       childDob = intent.getStringExtra(extra_childdob);
+      //childPic = intent.getByteExtra(extra_childpic, (byte) -1);
     }
 
     setTitle(childName + "  " + childDob);
@@ -55,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
     recyclerView.setHasFixedSize(true);
 
-    final SayingAdapter adapter = new SayingAdapter(this);
+    final SayingAdapter adapter = new SayingAdapter(this, this);
     recyclerView.setAdapter(adapter);
 
     adapter.setOnItemClickListener(new OnItemClickListener() {
@@ -79,12 +82,13 @@ public class MainActivity extends AppCompatActivity {
       public void onClick(View v) {
         Intent intent = new Intent(MainActivity.this, AddSayingActivity.class);
         intent.putExtra(extra_childId,childId);
+        intent.putExtra(extra_childpic,childPic );
         startActivity(intent);
       }
     });
 
 
-    sayingViewModel = ViewModelProviders.of(this, new SayingViewModelFactory(this.getApplication(), childId)).get(SayingViewModel.class);
+    sayingViewModel = new ViewModelProvider(this, new SayingViewModelFactory(this.getApplication(), childId)).get(SayingViewModel.class);
 
     //sayingViewModel = ViewModelProviders.of(this).get(SayingViewModel.class);
     sayingViewModel.getAllSayings().observe(this, new Observer<List<Saying>>() {

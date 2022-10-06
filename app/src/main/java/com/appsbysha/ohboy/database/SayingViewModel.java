@@ -4,6 +4,8 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+
+import com.appsbysha.ohboy.entities.Child;
 import com.appsbysha.ohboy.entities.Line;
 import com.appsbysha.ohboy.entities.Saying;
 import java.util.List;
@@ -25,6 +27,7 @@ public class SayingViewModel extends AndroidViewModel {
     repository.insert(saying);
   }
 
+  public LiveData<Child> fetchChildData(){return repository.getChildById(this.childId);}
 
   public void update(Saying saying) {
     repository.update(saying);

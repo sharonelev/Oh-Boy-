@@ -1,27 +1,29 @@
 package com.appsbysha.ohboy.adapters
 
 import android.app.Activity
+import android.content.Context
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
-import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.ViewModelProviders
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.appsbysha.ohboy.R
 import com.appsbysha.ohboy.adapters.SayingAdapter.SayingHolder
-import com.appsbysha.ohboy.database.LineViewModel
-import com.appsbysha.ohboy.database.LineViewModelFactory
 import com.appsbysha.ohboy.database.OhBoyRepository
 import com.appsbysha.ohboy.entities.Line
 import com.appsbysha.ohboy.entities.Saying
 import com.appsbysha.ohboy.interfaces.DataReadyListener
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.Period
 import java.util.*
 
-class SayingAdapter(val activity: Activity?) : RecyclerView.Adapter<SayingHolder>() {
+class SayingAdapter(private val activity: Activity?, private val context: Context) : RecyclerView.Adapter<SayingHolder>() {
     private var sayings: List<Saying> = ArrayList()
     private var dob: String? = null
     private var listener: OnItemClickListener? = null
@@ -34,6 +36,7 @@ class SayingAdapter(val activity: Activity?) : RecyclerView.Adapter<SayingHolder
         return SayingHolder(itemView)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: SayingHolder, position: Int) {
         val currentSaying = sayings[position]
         holder.textViewTitle.text = currentSaying.title
@@ -43,30 +46,52 @@ class SayingAdapter(val activity: Activity?) : RecyclerView.Adapter<SayingHolder
         val sayingDate = currentSaying.date
         sayingDate?.let {
             holder.textViewDate.text = sayingDate
-            val sdf = SimpleDateFormat("dd/MM/yyyy")
+            val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
             try {
                 val date = sdf.parse(sayingDate)
                 val childDob = sdf.parse(dob)
                 val cal = Calendar.getInstance()
                 cal.time = date
+               /* cal.set(Calendar.MILLISECOND, 0);
+                cal.set(Calendar.SECOND, 0);
+                cal.set(Calendar.MINUTE, 0);
+                cal.set(Calendar.HOUR_OF_DAY, 0);*/
                 val calDob = Calendar.getInstance()
                 calDob.time = childDob
-                val msdiff = cal.timeInMillis - calDob.timeInMillis
-                cal.timeInMillis = msdiff
-                val diffYears = (cal[Calendar.YEAR] - 1970).toString()
-                val diffMonths = cal[Calendar.MONTH].toString()
-                val diffDays = cal[Calendar.DAY_OF_MONTH].toString()
-                holder.textViewAge.text = "$diffYears years, $diffMonths months and $diffDays days old"
+   /*             calDob.set(Calendar.MILLISECOND, 0);
+                calDob.set(Calendar.SECOND, 0);
+                calDob.set(Calendar.MINUTE, 0);
+                calDob.set(Calendar.HOUR_OF_DAY, 0);*/
+                val sayingDate: LocalDate = LocalDate.of(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH))
+                val dateOfBirth: LocalDate = LocalDate.of(calDob.get(Calendar.YEAR), calDob.get(Calendar.MONTH), calDob.get(Calendar.DAY_OF_MONTH))
+                val msdiff = Period.between(dateOfBirth, sayingDate)
+                //cal.timeInMillis = msdiff
+                val diffYears = msdiff.years// (cal[Calendar.YEAR] - 1970)
+                val diffMonths = msdiff.months//cal[Calendar.MONTH]
+                val diffDays = msdiff.days//cal[Calendar.DAY_OF_MONTH]
+                val age = (if(diffYears != 0) "$diffYears year" else "") +
+                        if(diffYears>1)"s" else "" +
+                        (if(diffMonths != 0 && diffDays == 0) " and" else "") +
+                        (if(diffMonths != 0) " $diffMonths month" else "") +
+                         if(diffMonths>1)"s" else "" +
+                        (if(diffDays != 0 && (diffMonths != 0 || diffYears != 0)) " and" else "") +
+                         (if(diffDays != 0) " $diffDays day" else "") +
+                        if(diffDays>1)"s" else "" +
+                        " old"
+                holder.textViewAge.text =    age
             } catch (e: ParseException) {
                 e.printStackTrace()
             }
         }
         if (holder.expand) { //todo expand rv min/max height
-            //    holder.textViewDescription.maxLines = Int.MAX_VALUE
-            //   holder.textViewDescription.ellipsize = null
+            holder.recyclerView.visibility = View.VISIBLE
+            holder.expander.setImageDrawable(context.getDrawable(R.drawable.expand_less_foreground))
+
         } else {
-            //  holder.textViewDescription.maxLines = 3
-            // holder.textViewDescription.ellipsize = TruncateAt.END
+            holder.recyclerView.visibility = View.GONE
+            holder.expander.setImageDrawable(context.getDrawable(R.drawable.expand_more_foreground))
+
+
         }
         /*      currentSaying.photo?.let {
                    val bitmap = BitmapFactory
@@ -75,7 +100,7 @@ class SayingAdapter(val activity: Activity?) : RecyclerView.Adapter<SayingHolder
                }*/
 
         //todo add loading bar
-        OhBoyRepository(activity!!.application, currentSaying.childId, currentSaying.sayingId).getAllLinesView(object : DataReadyListener{
+        OhBoyRepository(activity?.application, currentSaying.childId, currentSaying.sayingId).getAllLinesView(object : DataReadyListener{
             override fun onSuccess(list: List<Line>) {
                 super.onSuccess(list)
                 holder.adapter.setLines(list as MutableList<Line>, false)
@@ -83,7 +108,7 @@ class SayingAdapter(val activity: Activity?) : RecyclerView.Adapter<SayingHolder
         })
 
      holder.recyclerView.adapter = holder.adapter
-        holder.recyclerView.layoutManager = LinearLayoutManager(activity)
+        holder.recyclerView.layoutManager = LinearLayoutManager(context)
         holder.recyclerView.setHasFixedSize(true)
 
 
@@ -105,6 +130,7 @@ class SayingAdapter(val activity: Activity?) : RecyclerView.Adapter<SayingHolder
         val adapter: LineAdapter = LineAdapter()
         val textViewDate: TextView = itemView.findViewById(R.id.text_view_date)
         val textViewAge: TextView = itemView.findViewById(R.id.text_view_dob)
+        val expander: ImageView = itemView.findViewById(R.id.expanderIcon)
 
         //  val photo: ImageView = itemView.findViewById(R.id.child_image)
         var expand = false

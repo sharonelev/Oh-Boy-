@@ -17,7 +17,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -64,7 +64,7 @@ public class ChildListActivity extends AppCompatActivity {
 
     recyclerView.setAdapter(adapter);
 
-    childViewModel = ViewModelProviders.of(this).get(ChildViewModel.class);
+    childViewModel = new ViewModelProvider(this).get(ChildViewModel.class);
     childViewModel.getAllChildren().observe(this, new Observer<List<Child>>() {
       @Override
       public void onChanged(List<Child> children) {
@@ -116,34 +116,19 @@ public class ChildListActivity extends AppCompatActivity {
     doneAdding.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        String ddString = dd.getText().toString();
-        String MMString = MM.getText().toString();
-        String yyyyString = yyyy.getText().toString();
 
-        if(ddString.length() == 1)
-          ddString = "0" + ddString;
 
-        if(MMString.length() == 1)
-          MMString = "0" + MMString;
+        String newDob = UiUtils.Companion.dateFormatter(dd.getText().toString(),
+        MM.getText().toString(),
+        yyyy.getText().toString());
 
-            ;
         if(addName.getText().toString().isEmpty() ||
-        ddString.isEmpty() ||
-            MMString.isEmpty() ||
-            yyyyString.isEmpty() ||
-            Integer.parseInt(ddString) >31 ||
-            Integer.parseInt(ddString) == 0 ||
-            Integer.parseInt(MMString)>12 ||
-            Integer.parseInt(MMString) == 0 ||
-            yyyyString.length()<4
-
+        newDob == null
         )
         {
           Toast.makeText(ChildListActivity.this, "Invalid input", Toast.LENGTH_SHORT).show();
           return;
         }
-
-        String newDob = ddString + "/" + MMString + "/" + yyyyString;
         Child addNewChild = new Child(addName.getText().toString(), newDob, childByteImage);
         childViewModel.insert(addNewChild);
         addView.setVisibility(View.GONE);
@@ -169,6 +154,8 @@ public class ChildListActivity extends AppCompatActivity {
         intent.putExtra(MainActivity.extra_childId, child.getId());
         intent.putExtra(MainActivity.extra_childname, child.getName());
         intent.putExtra(MainActivity.extra_childdob, child.getDob());
+        //intent.putExtra(MainActivity.extra_childpic, child.getProfilePic());
+
         startActivity(intent);
 
       }

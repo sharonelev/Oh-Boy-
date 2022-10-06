@@ -66,6 +66,8 @@ public interface OhBoyDao {
   @Query("SELECT * FROM children_table ORDER BY dob")
   LiveData<List<Child>> getAllChildren();
 
+  @Query("SELECT * FROM children_table WHERE id = :inputId")
+  LiveData<Child> getChildById(int inputId);
 
   @Transaction
   @Query("SELECT * FROM saying_table")

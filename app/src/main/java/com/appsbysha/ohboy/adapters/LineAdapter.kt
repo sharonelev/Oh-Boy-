@@ -1,28 +1,24 @@
 package com.appsbysha.ohboy.adapters
 
+import android.graphics.BitmapFactory
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
-import android.view.TextureView
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.appsbysha.ohboy.R
-import com.appsbysha.ohboy.database.LineViewModel
 import com.appsbysha.ohboy.entities.Line
 import com.appsbysha.ohboy.entities.LineType
-import kotlinx.android.synthetic.main.brackets_line.view.*
-import kotlinx.android.synthetic.main.child_line.view.text_view_description
-import kotlinx.android.synthetic.main.other_person_line.view.*
-import kotlinx.android.synthetic.main.other_person_line.view.remove_line
-import kotlinx.android.synthetic.main.saying_line.view.*
 
-class LineAdapter() : RecyclerView.Adapter<LineAdapter.LineHolder>() {
 
-    private var lines: MutableList<Line> = mutableListOf()
-    private var isEditable: Boolean = false
-   // private var lineViewModel: LineViewModel? = null
+class LineAdapter : RecyclerView.Adapter<LineAdapter.LineHolder>() {
+
+    var lines: MutableList<Line> = mutableListOf()
+    var isEditable: Boolean = false
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LineHolder {
 
         val itemView: View = LayoutInflater.from(parent.context).inflate(R.layout.saying_line, parent, false)
@@ -40,52 +36,96 @@ class LineAdapter() : RecyclerView.Adapter<LineAdapter.LineHolder>() {
         notifyDataSetChanged()
     }
 
+    fun addLine(line: Line)
+    {
+        this.lines.add(line)
+        notifyDataSetChanged()
+
+    }
+
     override fun onBindViewHolder(holder: LineHolder, position: Int) {
-
         lines[position].position = position
-      //  lineViewModel?.update(lines[position])
+        //  lineViewModel?.update(lines[position])
+        lines[position].childPic?.let {
+        val bitmap = BitmapFactory
+            .decodeByteArray(it, 0, it.size)
+        holder.childLinePic.setImageBitmap(bitmap)
+    }
+        if(!isEditable){
+            holder.childRemoveIcon.visibility = View.GONE
+            holder.bracketsRemoveIcon.visibility = View.GONE
+            holder.otherPersonRemoveIcon.visibility = View.GONE
+        }
+        else{
+            holder.childRemoveIcon.setOnClickListener {
+            lines.removeAt(position)
+                notifyDataSetChanged()
+            }
+            holder.bracketsRemoveIcon.setOnClickListener {
+                lines.removeAt(position)
+                notifyDataSetChanged()
+            }
+            holder.otherPersonRemoveIcon.setOnClickListener {
+                lines.removeAt(position)
+                notifyDataSetChanged()
+            }
+        }
 
-        holder.itemView.child_line.visibility = View.GONE
-        holder.itemView.brackets_line.visibility = View.GONE
-        holder.itemView.other_person_line.visibility = View.GONE
+        holder.childLine.visibility = View.GONE
+        holder.bracketsLine.visibility = View.GONE
+        holder.otherPersonLine.visibility = View.GONE
 
         when (lines[position].type) {
             LineType.CHILD_LINE.value -> {
-                holder.itemView.child_line.visibility = View.VISIBLE
-                holder.itemView.child_line.text_view_description.setText(lines[position].description)
-                holder.itemView.child_line.text_view_description.isEnabled = isEditable
+                holder.childLine.visibility = View.VISIBLE
+                holder.childLineDesc.setText(lines[position].description)
+                holder.childLineDesc.isEnabled = isEditable
             }
             LineType.BRACKETS.value -> {
-                holder.itemView.brackets_line.visibility = View.VISIBLE
-                holder.itemView.brackets_line.text_view_description.setText(lines[position].description)
-                holder.itemView.brackets_line.text_view_description.isEnabled = isEditable
+                holder.bracketsLine.visibility = View.VISIBLE
+                holder.bracketsDesc.setText(lines[position].description)
+                holder.bracketsDesc.isEnabled = isEditable
             }
             LineType.OTHER_PERSON_LINE.value -> {
-                holder.itemView.other_person_line.visibility = View.VISIBLE
-                holder.itemView.other_person_line.text_view_description.setText(lines[position].description)
-                holder.itemView.other_person_line.text_view_name.setText(lines[position].other_person)
-                holder.itemView.other_person_line.text_view_description.isEnabled = isEditable
-                holder.itemView.other_person_line.text_view_name.isEnabled = isEditable
+                holder.otherPersonLine.visibility = View.VISIBLE
+                holder.otherPersonDesc.setText(lines[position].description)
+                holder.otherPersonName.setText(lines[position].other_person)
+                holder.otherPersonDesc.isEnabled = isEditable
+                holder.otherPersonName.isEnabled = isEditable
             }
         }
+
     }
 
 
     inner class LineHolder(itemView: View) : RecyclerView.ViewHolder(itemView), TextWatcher {
 
+        val childLine: View = itemView.findViewById(R.id.child_line)
+        val childLineDesc: EditText = childLine.findViewById(R.id.text_view_description)
+        val childLinePic: ImageView = childLine.findViewById(R.id.child_image)
+        val bracketsLine: View = itemView.findViewById(R.id.brackets_line)
+        val bracketsDesc: EditText = bracketsLine.findViewById(R.id.text_view_description)
+        val otherPersonLine : View = itemView.findViewById(R.id.other_person_line)
+        val otherPersonDesc: EditText  = otherPersonLine.findViewById(R.id.text_view_description)
+        val otherPersonName : EditText = otherPersonLine.findViewById(R.id.text_view_name)
+        val childRemoveIcon: TextView = childLine.findViewById(R.id.remove_line)
+        val bracketsRemoveIcon: TextView = bracketsLine.findViewById(R.id.remove_line)
+        val otherPersonRemoveIcon: TextView = otherPersonLine.findViewById(R.id.remove_line)
+
 
 
         init {
+
             //todo remove click
-            itemView.child_line.text_view_description.addTextChangedListener(this)
-            itemView.brackets_line.text_view_description.addTextChangedListener(this)
-            itemView.other_person_line.text_view_description.addTextChangedListener(this)
-            itemView.other_person_line.text_view_name.addTextChangedListener(this)
+            childLineDesc.addTextChangedListener(this)
+            bracketsDesc.addTextChangedListener(this)
+            otherPersonDesc.addTextChangedListener(this)
+            otherPersonName.addTextChangedListener(this)
 
         }
 
         override fun afterTextChanged(s: Editable?) {
-            if (s === itemView.other_person_line.text_view_name.editableText)
+            if (s === otherPersonName.editableText)
                 lines[adapterPosition].other_person = s.toString()
             else
                 lines[adapterPosition].description = s.toString()
